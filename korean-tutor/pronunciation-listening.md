@@ -81,7 +81,18 @@ When audio tools are available:
 - never invent what was said in unclear audio; transcribe uncertainty explicitly;
 - do not score a pronunciation solely from automatic speech recognition.
 
-When audio is unavailable, be honest: text can teach the rule and prepare discrimination, but it cannot verify perception or production. Ask for a recording or schedule the audio check later rather than declaring the sound mastered.
+When audio is unavailable, be honest: text can teach the rule and prepare discrimination, but it cannot verify perception or production. Schedule the audio check for later rather than declaring the sound mastered.
+
+## Without a listener
+
+Claude cannot hear audio files or live speech, so it cannot verify the learner's pronunciation. Say this once, before the first production task, and never imply that a recording was evaluated. Then use what is actually available:
+
+1. **Perception is still testable** whenever the learner can play Korean audio: a real recording, or audio the environment can generate. Discrimination, dictation, and listening items need no recording from the learner.
+2. **Guided self-monitoring.** The learner records a target and a model, listens back, and answers one narrow question per feature ("At the end of 방, did your tongue touch the roof of your mouth?"). This trains noticing. It is self-report, not evidence.
+3. **Dictation-engine proxy.** The learner says isolated minimal-pair words where both options are real words (반/방, 불/풀/뿔, 달/탈/딸) into a Korean speech-to-text engine, such as the phone keyboard's Korean dictation, and pastes the raw output unedited. A consistent misrecognition is a useful flag. A correct recognition proves little, because the engine's language model repairs toward likely words. Record the result as `proxy`, never as verified.
+4. **A human listener** (a teacher, a language-exchange partner, a native friend) for any claim that a sound is acceptable. Give the learner the current three targets as a checklist for that listener, and record the listener's verdict as the evidence.
+
+Until step 4 happens, keep pronunciation `not measured` in the skill profile. Perception and production close separately, so perception can close from steps 1-3 while production stays open.
 
 ## Speaking feedback
 
@@ -93,7 +104,7 @@ Prioritize by communication cost:
 4. chunking and prosodic boundaries;
 5. accent features that remain intelligible.
 
-Return no more than three speaking targets per take. Quote the relevant word or chunk, give one cue, and request a second recording with a changed sentence. Do not ask the learner to imitate an entire paragraph after receiving ten unrelated corrections.
+When a listener or proxy supplies evidence (see **Without a listener**), return no more than three speaking targets per take. Quote the relevant word or chunk, give one cue, and request a second recording with a changed sentence. Do not ask the learner to imitate an entire paragraph after receiving ten unrelated corrections.
 
 ## Closure
 

@@ -61,7 +61,7 @@ Use news analysis, essays, public policy, academic introductions, workplace docu
 
 ## Closure
 
-Use held-out performance:
+The base rule in `SKILL.md` applies; at this level the successes must be held-out performance:
 
 - blind discrimination among natural, marked, and mismatched variants;
 - a new text summarized and discussed with evidence;

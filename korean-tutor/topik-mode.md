@@ -22,20 +22,19 @@ Formats and cut-offs can change. Before current advice, verify the NIIED/TOPIK o
 
 Never describe an exam level as the learner's complete Korean ability without additional samples. A learner can reach a cut-off through strong reading while having much weaker interaction.
 
-## Current PBT checkpoints
+## Current checkpoints
 
-As recorded by NIIED on the official information page last modified 2025-09-17:
+As shown on the NIIED official information page (last modified 2025-09-17, checked 2026-09-28):
 
-| Test | Level | Score band |
-|---|---:|---:|
-| TOPIK I PBT | 1 | 80-139 / 200 |
-| TOPIK I PBT | 2 | 140-200 / 200 |
-| TOPIK II PBT | 3 | 120-149 / 300 |
-| TOPIK II PBT | 4 | 150-189 / 300 |
-| TOPIK II PBT | 5 | 190-229 / 300 |
-| TOPIK II PBT | 6 | 230-300 / 300 |
+| Test | Sections (items) | Time | Total | Level bands |
+|---|---|---:|---:|---|
+| TOPIK I PBT | listening 30, reading 40 | 100 min | 200 | 1급 80-139, 2급 140-200 |
+| TOPIK I IBT | listening 26, reading 26 | 70 min | 400 | 1급 121-235, 2급 236-400 |
+| TOPIK II PBT | listening 50, reading 50, writing 4 | 180 min | 300 | 3급 120-149, 4급 150-189, 5급 190-229, 6급 230-300 |
+| TOPIK II IBT | listening 30, reading 30, writing 3 | 125 min | 600 | 3급 191-290, 4급 291-360, 5급 361-430, 6급 431-600 |
+| TOPIK Speaking | speaking 6 | 30 min | 200 | 1급 20-49, 2급 50-89, 3급 90-109, 4급 110-129, 5급 130-159, 6급 160-200 |
 
-Do not reuse these values for IBT. The same official page lists separate IBT bands and a separate 200-point speaking scale. Recheck before quoting any score table to a learner.
+PBT and IBT scores are on different scales: never convert one into the other or quote a PBT cut-off for an IBT candidate. Recheck the official page before quoting any row to a learner; if it has changed, the page wins and this table must be updated.
 
 ## Baseline
 

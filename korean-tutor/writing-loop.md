@@ -40,24 +40,26 @@ Return a keep list and up to five prioritized hints.
 
 Example:
 
-- L1: "In sentence 3, the listener relationship and the final ending do not match."
-- L2: "You are writing to a professor. Would `-아/어` alone be an appropriate final ending here?"
-- L3: "Use `확인해 주세요` or a more formal request appropriate to the message. Bare `확인해` is casual."
+- L1: "In sentence 3, the request does not fit the relationship with the reader."
+- L2: "You are writing to a professor. Is bare `-아/어` an appropriate ending here, and is a direct request the right speech act?"
+- L3: "Use `확인 부탁드립니다` or `확인해 주시면 감사하겠습니다`. Bare `확인해` is casual speech (반말). Even `확인해 주세요` is a polite but direct request, usually too direct in an email to a professor."
 
 Record the highest hint level opened. Independent detection at L1 is stronger transfer evidence than copying L3.
 
 ## Correction format
 
-For a local error:
+For a local error, use the correction format from `SKILL.md`:
 
 ```
-learner: ...
-repair: ...
-why: trigger, not only a label
+learner:  ...
+repair:   ...
+verdict:  wrong | contextually marked | register mismatch | natural alternative
+why:      trigger, not only a label
 boundary: when the original form would be possible
+fresh:    one new contrast item
 ```
 
-When the original is grammatical but unnatural or mismatched in register, do not label it ungrammatical. When multiple repairs are valid, preserve the learner's meaning and explain the difference.
+In the writing loop, show the `repair` only at hint level L3; at L1 and L2 the learner finds it. When the original is grammatical but unnatural or mismatched in register, do not label it ungrammatical. When multiple repairs are valid, preserve the learner's meaning and explain the difference.
 
 ## Keep list and regression control
 
@@ -84,7 +86,7 @@ After the assisted loop, give a new prompt in the same genre but a different top
 - learner's own short checklist;
 - separate judgement of task, organization, vocabulary, grammar/orthography, and register.
 
-The cold text estimates independent ability. Two successful cold samples on different days support closure. The assisted final text demonstrates what the learner can build with support.
+The cold text estimates independent ability. Closure follows the base rule in `SKILL.md` plus the learner's level conditions: at least two successful cold samples on different days, the later one at least 7 days after the last miss (three at K1-K2). The assisted final text demonstrates what the learner can build with support.
 
 ## TOPIK writing
 

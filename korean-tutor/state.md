@@ -1,13 +1,71 @@
 # Learner state and records
 
-Persist evidence outside conversational memory. Use the storage format that fits the environment; the required information matters more than JSON versus Markdown.
+Persist evidence outside conversational memory. Without a dated record every session re-teaches from scratch, and nothing can ever close, because closure needs evidence spread across calendar days.
 
-## Learner profile
+## Where the record lives
 
-Record:
+### With a file system (Claude Code, the desktop Code tab)
+
+Keep the record in a folder named `korean-course/` in the working directory, unless the learner has named another place. If the working directory already is the course folder (it contains `profile.md` and `patterns.jsonl`), use it directly. Create the folder in session zero and never start a second one.
+
+```
+korean-course/
+  profile.md        learner profile and dated skill profile
+  patterns.jsonl    one pattern per line, open or closed
+  vocab.jsonl       one lexical record per line
+  defects.jsonl     instrument defects, never learner errors
+  sessions.md       append-only session summaries, newest last
+  rounds/           one file per round: YYYY-MM-DD-NN.md
+  snapshots/        raw writing and speech transcripts: YYYY-MM-DD-<genre>.md
+```
+
+JSON Lines lets one pattern or word be updated by its `id` or `lemma` without rewriting the rest. Take today's date from the system (`date +%F`), not from the conversation.
+
+### Without a file system (plain chat)
+
+Keep the same fields but hand them to the learner. End every session with one fenced block headed `KOREAN-TUTOR STATE`: the profile line, open patterns with `next_review`, words due in the next two weeks, and the last three session summaries, compact enough to paste. Ask the learner to paste it at the start of the next conversation, or to keep it as a project file where the environment has projects. If no state arrives, say what was lost and run a short re-placement instead of guessing from memory.
+
+## Session procedure
+
+**Start of a session:**
+
+1. Read `profile.md` and the last two entries of `sessions.md`.
+2. Collect every pattern and word whose `next_review` is today or earlier.
+3. Open with those due items as unannounced cold checks on new surfaces. They are the evidence that closes things.
+4. Continue with the next smallest target named in the last session summary.
+
+If more than about eight items are due, check open patterns before words and words before closed maintenance items, most overdue first. Carry the rest to the next session without resetting them.
+
+**After every round** (a session can be interrupted at any point):
+
+1. Write the round file with item-level data.
+2. Update every touched pattern and word: counts, `status`, `last_seen`, `step`, `next_review`.
+3. Log instrument defects in `defects.jsonl`, never in the learner's counts.
+
+**End of a session:** append the session summary to `sessions.md` and show the learner a short list of what changed in the record.
+
+## Spacing ladder
+
+Every pattern and word carries `step` and `next_review`. The intervals by step are:
+
+| step | 0 | 1 | 2 | 3 | 4 | 5 |
+|---|---:|---:|---:|---:|---:|---:|
+| days to next review | 1 | 3 | 7 | 14 | 30 | 60 |
+
+| Event at a check | New step | Next review |
+|---|---|---|
+| introduced, or missed | 0 | today + 1 day |
+| fresh success without a hint | step + 1 | today + interval of the new step |
+| success only after a hint | unchanged | today + interval of the current step |
+| instrument defect | unchanged | unchanged; the check did not happen |
+
+Successes in the session where the item was taught do not move the step, and the step moves at most once per calendar day. A pattern introduced on day 0 and never missed again is checked on days 1, 4, and 11; the day-11 success satisfies the timing part of the closure base rule in `SKILL.md` at every level. After closure the ladder continues as maintenance (14, 30, 60 days); a miss sets the status to `reopened` and the step to 0.
+
+## Learner profile (`profile.md`)
 
 ```
 learner_id_or_alias
+first_language
 preferred_explanation_language
 goals[]
 target_date: optional
@@ -20,7 +78,7 @@ constraints: audio, keyboard, time, accessibility
 
 Keep an alias in shareable reports. Real messages, recordings, and exam scores are private by default.
 
-## Skill profile
+## Skill profile (`profile.md`)
 
 Never store only one level. Maintain separate, dated estimates for:
 
@@ -36,34 +94,49 @@ Never store only one level. Maintain separate, dated estimates for:
 - register/pragmatics;
 - TOPIK section performance when relevant.
 
-Every estimate carries the evidence slice: task type, length/items, support, timing, and whether the material was fresh.
+Every estimate carries the evidence slice: task type, length/items, support, timing, and whether the material was fresh. Mark a skill `not measured` rather than inferring it from another skill; pronunciation stays `not measured` when no one has listened to the learner.
 
-## Pattern record
+## Pattern record (`patterns.jsonl`)
 
-Use one row per smallest actionable pattern:
+One line per smallest actionable pattern (shown expanded here):
 
 ```json
 {
   "id": "particles.topic-vs-focus.new-subject",
   "layer": "particle_discourse",
-  "status": "open",
+  "status": "acquired_not_transferred",
   "correct": 4,
   "wrong": 3,
   "clean_false_positive": 1,
-  "last_seen": "2026-09-23",
-  "evidence": ["round-004:item-3", "writing-002:s2"],
+  "step": 1,
+  "last_miss": "2026-09-23",
+  "last_seen": "2026-09-24",
+  "next_review": "2026-09-27",
+  "evidence": ["2026-09-23-01:item-3", "snapshots/2026-09-24-message.md:s2"],
   "hypothesis": "uses one-to-one L1 translation instead of discourse context",
   "counter_evidence": [],
-  "next_check": "newly introduced subject vs established contrast topic",
-  "next_review": "2026-09-27"
+  "next_check": "newly introduced subject vs established contrast topic"
 }
 ```
 
 Do not merge `batchim omission in dictation` with `batchim release in speaking`; they require different treatment. Do not split so finely that the row has only one unexplained miss.
 
-## Vocabulary record
+## Correction record (inside round files)
 
-Track dimensions separately:
+Every correction is stored with the same fields the learner sees (the format in `SKILL.md`), plus the context needed to revisit the diagnosis:
+
+```
+learner, repair, verdict, why, boundary, fresh
+context: speaker / listener / subject / setting / purpose
+segmentation: only when it explains the error, e.g. 먹-었-어요
+pattern_id
+```
+
+If the learner's form is possible in a different context, the `boundary` field names that context.
+
+## Vocabulary record (`vocab.jsonl`)
+
+Track recognition, recall, and use separately (shown expanded):
 
 ```json
 {
@@ -76,15 +149,16 @@ Track dimensions separately:
   "recognition": "learning",
   "recall": "open",
   "use": "open",
+  "step": 0,
   "last_seen": "2026-09-23",
-  "next_review": "2026-09-26",
+  "next_review": "2026-09-24",
   "sources": ["reading-007:p2"]
 }
 ```
 
 Seeing a word in the answer key updates exposure, not recall.
 
-## Round record
+## Round record (`rounds/`)
 
 Store item-level data:
 
@@ -96,7 +170,7 @@ learner_reason, hint_level, pattern_ids, instrument_defect
 
 Store audio/text provenance and enough context to revisit a diagnosis. Preserve the learner's wording; aggregated totals cannot reconstruct a mechanism later.
 
-## Production snapshot
+## Production snapshot (`snapshots/`)
 
 For speech or writing:
 
@@ -110,7 +184,7 @@ open_patterns[]
 new_patterns[]
 ```
 
-If automatic transcription or grammar correction sits in the path, record it. Corrected transcripts are not raw pronunciation or grammar evidence.
+If automatic transcription, a translator, keyboard prediction, or grammar correction sits in the path, record it. Corrected transcripts are not raw pronunciation or grammar evidence.
 
 ## Module status
 
@@ -125,7 +199,7 @@ Use:
 
 Attach the closure rule and a calendar review date. Drill scores may move a pattern to `acquired_not_transferred`; only fresh production or comprehension can close it.
 
-## Instrument defects
+## Instrument defects (`defects.jsonl`)
 
 Keep tutor/test defects beside learner evidence but never count them as learner errors:
 
@@ -135,16 +209,17 @@ item_id, date, defect_type, description, resolution, affected_scores
 
 Useful defect types include insufficient context, multiple defensible answers, unnatural Korean, audio artifact, normalization bug, wrong key, and outdated exam fact.
 
-## Session summary
+## Session summary (`sessions.md`)
 
 End each completed session with:
 
+- date;
 - what was sampled;
 - what is now verified;
 - what remains a hypothesis;
 - one to three keep items;
 - the next smallest target;
-- delayed review date;
+- the earliest `next_review` date in the record;
 - homework only if the learner wants it.
 
 Use dates, not "round 3" alone. Spacing is measured in calendar time.

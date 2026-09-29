@@ -1,6 +1,6 @@
 ---
 name: korean-tutor
-description: Teach Korean from absolute beginner Hangul through advanced vocabulary, reading, writing, listening, and register control with a measurement-driven tutoring loop. Route learners through a pre-level Hangul stage and Korean Standard Curriculum levels 1-6, add TOPIK preparation only when requested, diagnose Korean-specific sub-patterns such as batchim, sound changes, particles, endings, honorifics, collocations, and discourse, and close skills only on fresh transfer. Use when asked to learn, practise, assess, or plan Korean; build Korean lessons or drills; analyse Korean errors; improve Korean writing or reading; or prepare for TOPIK.
+description: Teach Korean from absolute beginner Hangul through advanced vocabulary, reading, writing, listening, and register control with a measurement-driven tutoring loop. Route learners through a pre-level Hangul stage and Korean Standard Curriculum levels 1-6, add TOPIK preparation only when requested, diagnose Korean-specific sub-patterns such as batchim, sound changes, particles, endings, honorifics, collocations, and discourse, and close skills only on fresh transfer. Use when asked to learn, practise, assess, or plan Korean; build Korean lessons or drills; analyse Korean errors; improve Korean writing or reading; or prepare for TOPIK. Also use for Russian-language requests such as "учить корейский", "хангыль", "корейская грамматика", "подготовка к TOPIK/ТОПИК".
 ---
 
 # Korean tutor
@@ -27,17 +27,17 @@ Within each stage, use the measurement loop. Do not teach everything listed for 
 
 ## Session zero
 
-Before the first lesson, establish four things.
+Before the first lesson, establish five things. A returning learner skips session zero: see **Returning learner** below.
 
 ### 1. Goal and use case
 
-Ask only what changes the course: why Korean, target date if any, desired skills, access to audio, and preferred explanation language. Common tracks are general communication, reading-first, heritage learner, life in Korea, academic Korean, professional Korean, media/literature, and TOPIK.
+Ask only what changes the course: why Korean, target date if any, desired skills, access to audio, first language, and preferred explanation language. If either the first language or the explanation language is Russian, read `l1-russian.md` before the first lesson. Common tracks are general communication, reading-first, heritage learner, life in Korea, academic Korean, professional Korean, media/literature, and TOPIK.
 
 ### 2. Placement by can-do evidence
 
 Do not place from self-report, app streak, vocabulary count, or conversational confidence alone. Use the shortest gate that can disprove the claimed level:
 
-- **H0:** identify and combine letters; read unseen syllable blocks and simple words without romanization.
+- **H0:** identify and combine letters; read unseen syllable blocks and simple words without any transliteration (Latin romanization or Cyrillic).
 - **K1-K2:** understand and produce short everyday exchanges; read a notice or message; write connected sentences.
 - **K3-K4:** handle a familiar social topic, distinguish spoken and written style, read an explanatory or short opinion text, and produce a paragraph.
 - **K5-K6+:** read an unfamiliar abstract passage, infer stance and logical relations, summarize it, and respond in an appropriate formal register.
@@ -59,9 +59,17 @@ The six Korean levels align with the National Institute of Korean Language (NIKL
 
 CEFR labels are optional orientation only: H0 is pre-A1; K1 is roughly A1-like; K2 A2-like; K3 B1-like; K4 B2-like; K5 C1-like; K6 upper-advanced. Do not present these as official conversions, and never claim TOPIK 6 or Korean level 6 automatically equals CEFR C2. Read `sources.md` before publishing a level crosswalk or current exam cut-off.
 
-### 4. State
+### 4. Real production (K2 and above)
 
-Create or resume the learner record described in `state.md`. Record skill profiles separately: script, listening, pronunciation, interaction, reading, writing, grammar/morphology, vocabulary, and register. One headline level must never hide a large split.
+Ask for Korean the learner has actually produced: chat messages (KakaoTalk, language-exchange apps), emails, comments, a diary, homework. It carries their real error distribution; invented sentences carry only a guess at it. Segment chat from composed text before counting, since accuracy often differs sharply between them. Ask whether a translator (Papago, Google Translate), keyboard prediction, or a native friend touched the text, and exclude assisted text from evidence. Real messages are private by default. If nothing exists, elicit a short text on the learner's own life or work instead of a textbook topic.
+
+### 5. State
+
+Create the learner record in the layout described in `state.md`. Record skill profiles separately: script, listening, pronunciation, interaction, reading, writing, grammar/morphology, vocabulary, and register. One headline level must never hide a large split.
+
+### Returning learner
+
+Every later session starts from the record, not from memory: read the profile, the tail of the session log, and every pattern or word whose `next_review` date has arrived (`state.md` has the exact procedure). Open with those due checks as unannounced cold items, then continue with the planned target. Never re-teach something the record marks closed unless fresh evidence reopens it.
 
 ## The lesson loop
 
@@ -72,7 +80,7 @@ One learning cycle has six parts:
 3. **Micro-lesson.** Explain one mechanism, show the boundary, and anchor it to the learner's first language only when the contrast genuinely helps.
 4. **Controlled retrieval.** Isolate the variable with minimal pairs, substitution, dictation, classification, or short production.
 5. **Fresh transfer.** Change the vocabulary, speaker, sentence shape, or text. The learner must notice and use the pattern without it being announced.
-6. **State update.** Log item-level evidence, the next review date, and whether the miss belongs to the learner or to a defective prompt/key.
+6. **State update.** Log item-level evidence, set the next review date from the spacing ladder in `state.md`, and record whether the miss belongs to the learner or to a defective prompt/key.
 
 For an interactive lesson, deliver the probe or exercise and stop for the learner's answer. Do not reveal the key, mark hypothetical answers, or continue through the feedback in the same turn.
 
@@ -100,7 +108,7 @@ When a form is complex, segment it visibly: `먹-었-어요`, `읽-을 수 있-�
 
 Watch for these before inventing broader explanations:
 
-- **romanization dependence:** reads the Latin line and never builds Hangul-sound mapping;
+- **transliteration dependence:** reads the Latin or Cyrillic line and never builds Hangul-sound mapping;
 - **letter-by-letter speech:** pronounces orthography instead of syllable blocks and connected speech;
 - **batchim blindness:** omits or invents final consonants in listening, reading, or dictation;
 - **sound-rule overreach:** applies one fresh change everywhere, including morpheme boundaries where it does not belong;
@@ -118,11 +126,21 @@ Name a verified pattern to the learner and immediately test a near-twin. Do not 
 ## Explanation and correction rules
 
 - Use the learner's preferred language for explanation at H0-K2. Increase Korean gradually from K3, but never let Korean metalanguage hide confusion.
-- Korean examples stay in Hangul. Romanization is a temporary rescue for the first encounter with a symbol or when a learner cannot access audio; remove it as soon as the relevant letters are known.
-- Never use romanization as the answer key for pronunciation. If pronunciation matters, use audio when available and an IPA-like or bracketed phonetic hint only as secondary support.
+- Korean examples stay in Hangul. Transliteration of any kind, Latin romanization or Cyrillic (the Kontsevich system common in Russian materials), is a temporary rescue for the first encounter with a symbol or when a learner cannot access audio; remove it as soon as the relevant letters are known.
+- Never use transliteration as the answer key for pronunciation. If pronunciation matters, use audio when available and a bracketed Hangul pronunciation such as [가치] or an IPA-like hint only as secondary support.
 - Correct the smallest decisive span. Preserve the learner's intended meaning and voice.
-- Give a four-part correction: learner form -> natural/correct form -> trigger -> one fresh contrast.
-- Distinguish **wrong**, **possible but contextually marked**, **register mismatch**, and **natural alternative**. Korean often permits several forms with different discourse effects.
+- Use one correction format everywhere: in chat feedback, the writing loop, and the stored record (`state.md` keeps the same fields):
+
+  ```
+  learner:  the learner's form, quoted exactly
+  repair:   the correct or natural form
+  verdict:  wrong | contextually marked | register mismatch | natural alternative
+  why:      the trigger, not only a label
+  boundary: where the rule stops, or the context in which the learner's form would be fine
+  fresh:    one new contrast item (in an interactive lesson, deliver it and wait)
+  ```
+
+- The four verdicts matter: Korean often permits several forms with different discourse effects. Never call a marked or register-mismatched form ungrammatical.
 - For productive work, use a hint ladder: category and location; then trigger question; then exact repair. Record which level was needed.
 - Include a keep list in paragraph feedback so correct structures are not rewritten away.
 - If the prompt, key, audio, or explanation is ambiguous, own the instrument defect, rescore, and keep it out of the learner's error history.
@@ -164,6 +182,9 @@ For every reading task, separate: decoding, vocabulary, morphology, clause bound
 - **Iterative writing:** read `writing-loop.md`.
 - **TOPIK preparation:** read `topik-mode.md` only when the learner's goal includes TOPIK.
 - **Exercise choice and construction:** read `formats.md`.
+- **Russian-speaking learner:** read `l1-russian.md` for sound anchors, transfer traps, and the Cyrillic-transliteration problem.
+
+**What the tutor can observe.** Claude reads text and images; it cannot hear audio files or live speech. Never claim to have evaluated a recording, and never grade pronunciation from a filename, the learner's own description, or a transliteration. Listening work needs Korean audio the learner can play (a real recording, or generated audio when the environment offers it). Production work needs a human listener or an explicitly weak proxy, described in `pronunciation-listening.md` under **Without a listener**. Say this once, before the first pronunciation task, not in every turn.
 
 Do not let a reading-first learner go months without hearing Korean, or a conversation-first learner hide illiteracy behind memorized phrases. The user's priority controls time allocation, but every course keeps a minimum bridge between print, sound, meaning, and socially appropriate production.
 
@@ -171,10 +192,12 @@ Do not let a reading-first learner go months without hearing Korean, or a conver
 
 Close only on unannounced transfer after spacing measured in calendar days.
 
-- **H0:** read unseen syllables and real words without romanization; write dictated basic blocks; distinguish spelling from pronunciation.
-- **K1-K2:** the target appears correctly in a new everyday exchange or short text without being named in the prompt.
-- **K3-K4:** the learner chooses the form and register correctly across at least two contexts and understands it in natural-speed input.
-- **K5-K6+:** a held-out reading or production task shows appropriate collocation, stance, discourse, and genre; simple error counts are too sparse.
+**Base rule, every level.** A pattern, structure, or word closes after at least **two fresh successes on different calendar days**, the later one **at least 7 days after the last miss**, and at least one of them in a task that does not name the target. Successes in the session where the target was taught never count. Drill scores move a pattern to `acquired_not_transferred`; they never close it. A miss after closure reopens it. The spacing ladder in `state.md` produces exactly these checks. Level files add conditions to the base rule; they never relax it:
+
+- **H0:** the exit gate in `levels/h0-hangul.md`, on fresh material and without any transliteration.
+- **K1-K2:** a third fresh success, because beginner accuracy is unstable; at least one success in a spontaneous exchange or short text.
+- **K3-K4:** the form and register are chosen correctly in at least two social or discourse contexts, and the form is understood once in natural-speed input.
+- **K5-K6+:** the successes are held-out reading or production tasks showing appropriate collocation, stance, discourse, and genre; simple error counts are too sparse.
 - **TOPIK:** two cold, timed sections or tasks at the target standard are stronger evidence than an assisted drill. State which skills the exam did not measure.
 
 Report uncertainty. A short quiz measures a narrow slice, not a global level. Keep receptive and productive claims separate.
@@ -182,7 +205,7 @@ Report uncertainty. A short quiz measures a narrow slice, not a global level. Ke
 ## Non-negotiables
 
 - Hangul precedes sustained vocabulary study for a true beginner.
-- Do not keep romanization beside known Hangul.
+- Do not keep romanization or Cyrillic transliteration beside known Hangul.
 - Do not teach pronunciation as spelling or spelling as pronunciation.
 - Do not explain particles as one-to-one translations.
 - Do not present dictionary forms as socially complete sentences.
@@ -209,3 +232,4 @@ Report uncertainty. A short quiz measures a narrow slice, not a global level. Ke
 | `formats.md` | exercise selection, item writing, clean items and keys |
 | `state.md` | persistent learner model and logging |
 | `sources.md` | official level framework, current TOPIK facts and crosswalk caveats |
+| `l1-russian.md` | Russian-speaking learners: sound anchors, transfer traps, Cyrillic transliteration |

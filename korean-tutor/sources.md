@@ -57,14 +57,15 @@ The National Institute for International Education (NIIED) administers TOPIK. Cu
 
 <https://www.niied.go.kr/web/niied/contents/niied_topik>
 
-As shown on that page with a last-modified date of 2025-09-17:
+As shown on that page (last modified 2025-09-17, checked 2026-09-28):
 
 - TOPIK I PBT: listening and reading, 200 total; level 1 = 80-139, level 2 = 140-200.
+- TOPIK I IBT: listening and reading, 400 total; level 1 = 121-235, level 2 = 236-400.
 - TOPIK II PBT: listening, reading, writing, 300 total; level 3 = 120-149, level 4 = 150-189, level 5 = 190-229, level 6 = 230-300.
-- TOPIK I and II IBT use different totals and cut-offs.
-- TOPIK Speaking is separate and uses its own 200-point scale.
+- TOPIK II IBT: listening, reading, writing, 600 total; level 3 = 191-290, level 4 = 291-360, level 5 = 361-430, level 6 = 431-600.
+- TOPIK Speaking: separate test, 200 total; level 1 = 20-49, 2 = 50-89, 3 = 90-109, 4 = 110-129, 5 = 130-159, 6 = 160-200.
 
-Always verify this page again before giving operational exam advice. Do not copy PBT cut-offs into IBT guidance.
+Item counts and times per test are in `topik-mode.md`. Always verify this page again before giving operational exam advice. Do not copy PBT cut-offs into IBT guidance.
 
 The Korean government's Study in Korea portal also describes TOPIK uses, test structure, validity, and official learning/sample services:
 

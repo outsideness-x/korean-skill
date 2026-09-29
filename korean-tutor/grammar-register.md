@@ -84,18 +84,11 @@ Separate productive patterns from highly lexicalized forms. Frequency outranks t
 
 ## Korean-specific correction record
 
-For a grammar miss, store:
+For a grammar miss, store the correction record from `state.md` (the same fields the learner sees in the `SKILL.md` correction format), and always fill these three for grammar:
 
-```
-learner_form
-intended_meaning
-context: speaker / listener / subject / setting / purpose
-correct_or_natural_form
-morpheme_segmentation
-trigger
-boundary
-fresh_transfer_item
-```
+- `context`: speaker / listener / subject / setting / purpose, plus the learner's intended meaning;
+- `segmentation`: the morpheme boundaries that locate the error;
+- `boundary`: the context in which the learner's form would be possible.
 
 If the learner form is possible under a different context, say so and specify that context. Never call a discourse choice ungrammatical merely because a textbook expected another particle.
 
