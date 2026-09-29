@@ -16,6 +16,7 @@ korean-course/
   defects.jsonl     instrument defects, never learner errors
   sessions.md       append-only session summaries, newest last
   rounds/           one file per round: YYYY-MM-DD-NN.md
+  exercises/        page specs with keys and built pages: YYYY-MM-DD-NN.json / .html
   snapshots/        raw writing and speech transcripts: YYYY-MM-DD-<genre>.md
 ```
 
@@ -74,6 +75,7 @@ current_band: H0 | K1 | K2 | K3 | K4 | K5 | K6 | K6+
 placement_date
 placement_evidence[]
 constraints: audio, keyboard, time, accessibility
+exercise_page: URL of the published exercise page, if any (interactive.md)
 ```
 
 Keep an alias in shareable reports. Real messages, recordings, and exam scores are private by default.
@@ -168,7 +170,7 @@ item_id, prompt/source, learner_answer, accepted_answers, verdict
 learner_reason, hint_level, pattern_ids, instrument_defect
 ```
 
-Store audio/text provenance and enough context to revisit a diagnosis. Preserve the learner's wording; aggregated totals cannot reconstruct a mechanism later.
+Store audio/text provenance and enough context to revisit a diagnosis. Preserve the learner's wording; aggregated totals cannot reconstruct a mechanism later. For a round delivered as a page, paste the learner's `KT-RESULT` block into the round file verbatim, next to the spec id, before interpreting it.
 
 ## Production snapshot (`snapshots/`)
 

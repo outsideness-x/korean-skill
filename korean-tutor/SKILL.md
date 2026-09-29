@@ -82,7 +82,7 @@ One learning cycle has six parts:
 5. **Fresh transfer.** Change the vocabulary, speaker, sentence shape, or text. The learner must notice and use the pattern without it being announced.
 6. **State update.** Log item-level evidence, set the next review date from the spacing ladder in `state.md`, and record whether the miss belongs to the learner or to a defective prompt/key.
 
-For an interactive lesson, deliver the probe or exercise and stop for the learner's answer. Do not reveal the key, mark hypothetical answers, or continue through the feedback in the same turn.
+For an interactive lesson, deliver the probe or exercise and stop for the learner's answer. Do not reveal the key, mark hypothetical answers, or continue through the feedback in the same turn. When the environment can show an HTML page, deliver item sets as a page with a built-in Korean keyboard, audio, and flashcard export (`interactive.md`); the stop-and-wait rule still holds, and the learner returns a result block.
 
 ## Diagnose Korean at the right layer
 
@@ -182,6 +182,7 @@ For every reading task, separate: decoding, vocabulary, morphology, clause bound
 - **Iterative writing:** read `writing-loop.md`.
 - **TOPIK preparation:** read `topik-mode.md` only when the learner's goal includes TOPIK.
 - **Exercise choice and construction:** read `formats.md`.
+- **Interactive pages and flashcards:** read `interactive.md`.
 - **Russian-speaking learner:** read `l1-russian.md` for sound anchors, transfer traps, and the Cyrillic-transliteration problem.
 
 **What the tutor can observe.** Claude reads text and images; it cannot hear audio files or live speech. Never claim to have evaluated a recording, and never grade pronunciation from a filename, the learner's own description, or a transliteration. Listening work needs Korean audio the learner can play (a real recording, or generated audio when the environment offers it). Production work needs a human listener or an explicitly weak proxy, described in `pronunciation-listening.md` under **Without a listener**. Say this once, before the first pronunciation task, not in every turn.
@@ -233,3 +234,6 @@ Report uncertainty. A short quiz measures a narrow slice, not a global level. Ke
 | `state.md` | persistent learner model and logging |
 | `sources.md` | official level framework, current TOPIK facts and crosswalk caveats |
 | `l1-russian.md` | Russian-speaking learners: sound anchors, transfer traps, Cyrillic transliteration |
+| `interactive.md` | exercise pages: when to use them, spec format, delivery, the result block, flashcards |
+| `assets/exercise.html`, `scripts/build_exercise.py` | the page template and the builder that validates a spec and fills the template |
+| `assets/example-drill.json` | a complete example spec using all six item types |

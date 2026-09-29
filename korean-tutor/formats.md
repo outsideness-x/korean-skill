@@ -2,6 +2,8 @@
 
 Choose the format by the claim you need to test. Rotate formats so the learner cannot pass by remembering position, wording, or the previous correction.
 
+These rules apply whether a set is delivered as numbered text or as an interactive page. The page supports choice, gap/build, find-and-repair with clean items, chunk ordering, audio discrimination, and dictation; `interactive.md` covers the spec and delivery.
+
 ## Core formats
 
 | Format | What it measures | Common failure |

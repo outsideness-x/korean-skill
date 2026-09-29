@@ -1,0 +1,901 @@
+<title>Корейский тренажёр</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;600&family=Onest:wght@400;500;600&display=swap">
+<style>
+/* Layout: one 720px workbook column under a sticky progress bar; one task card at a time;
+   Korean answers are echoed into 원고지-style grid cells so blocks and spacing are visible. */
+:root {
+  --paper: #F8F9F6; --wash: #EEF1EC; --ink: #1E2421; --ink-soft: #59625C;
+  --line: #D5DBD3; --cell: #B9CDBE;
+  --accent: #2D4A80; --accent-ink: #FFFFFF; --accent-soft: #E3E9F4;
+  --ok: #2E6A45; --ok-bg: #E4F1E7; --bad: #A33F28; --bad-bg: #F9EAE4; --warn: #775A1C; --warn-bg: #F6EEDA;
+  --font-ko: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --font-ui: "Onest", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --r: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #141816; --wash: #1B201D; --ink: #E4E8E3; --ink-soft: #A0A9A2;
+    --line: #313833; --cell: #3D5244;
+    --accent: #9DB4E3; --accent-ink: #10182A; --accent-soft: #212C42;
+    --ok: #86C79C; --ok-bg: #18291E; --bad: #F09A83; --bad-bg: #331D17; --warn: #E2C27A; --warn-bg: #2C2414;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #141816; --wash: #1B201D; --ink: #E4E8E3; --ink-soft: #A0A9A2;
+  --line: #313833; --cell: #3D5244;
+  --accent: #9DB4E3; --accent-ink: #10182A; --accent-soft: #212C42;
+  --ok: #86C79C; --ok-bg: #18291E; --bad: #F09A83; --bad-bg: #331D17; --warn: #E2C27A; --warn-bg: #2C2414;
+  color-scheme: dark;
+}
+[hidden] { display: none !important; }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--paper); color: var(--ink); font: 16px/1.55 var(--font-ui); -webkit-text-size-adjust: 100%; }
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); border-bottom: 1px solid var(--line); }
+.bar-in { max-width: 720px; margin: 0 auto; padding: 10px 16px; display: flex; gap: 12px; align-items: center; justify-content: space-between; }
+.bar h1 { font-size: 15px; font-weight: 600; margin: 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.badge { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); border-radius: 4px; padding: 2px 7px; margin-right: 8px; font-weight: 600; vertical-align: 1px; }
+.meta { font: 500 14px var(--font-mono); font-variant-numeric: tabular-nums; color: var(--ink-soft); white-space: nowrap; }
+.fill { height: 3px; background: var(--accent); width: 0; transition: width .2s; }
+main { max-width: 720px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 56px; display: grid; gap: 20px; }
+h2 { font-size: 24px; line-height: 1.25; margin: 0; text-wrap: balance; }
+p { margin: 0; max-width: 64ch; }
+.soft { color: var(--ink-soft); }
+.stack { display: grid; gap: 12px; min-width: 0; }
+.card { background: var(--wash); border: 1px solid var(--line); border-radius: 12px; padding: 20px; display: grid; gap: 16px; min-width: 0; }
+.eyebrow { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
+.exhibit { font: 400 26px/1.5 var(--font-ko); word-break: keep-all; overflow-wrap: anywhere; }
+.ko-chip { font-family: var(--font-ko); background: var(--accent-soft); border-radius: 4px; padding: 0 4px; }
+.gap { display: inline-block; min-width: 2.4em; border-bottom: 2px solid var(--accent); margin: 0 .15em; color: transparent; line-height: 1.1; }
+.cpw { display: flex; gap: 6px; align-items: flex-start; min-width: 0; }
+.cpw > :first-child { flex: 1 1 auto; min-width: 0; }
+.cp { flex: none; width: 32px; height: 32px; padding: 0; display: grid; place-items: center; border-color: transparent; background: transparent; color: var(--ink-soft); }
+.cp:hover { border-color: var(--line); color: var(--accent); }
+.cp svg { width: 16px; height: 16px; }
+.cp .ck, .cp.done .cc { display: none; }
+.cp.done .ck { display: block; }
+.cp.done { color: var(--ok); }
+.transcript { font: 20px/1.5 var(--font-ko); }
+.situation { border-left: 3px solid var(--accent); padding-left: 12px; display: grid; gap: 2px; }
+button { font: inherit; cursor: pointer; border-radius: var(--r); border: 1px solid var(--line); background: var(--paper); color: var(--ink); padding: 10px 16px; }
+button:disabled { opacity: .45; cursor: default; }
+.opt:disabled, .chunk:disabled { opacity: 1; }
+.link { justify-self: start; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button.armed { background: var(--bad); border-color: var(--bad); color: var(--paper); }
+button.link { border: 0; background: none; padding: 4px 0; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input[type=text], textarea, select { font: inherit; color: var(--ink); background: var(--paper); caret-color: var(--accent); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; width: 100%; }
+input:disabled, textarea:disabled { opacity: .75; }
+.ko-in { font: 22px/1.4 var(--font-ko); }
+select { width: auto; max-width: 100%; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; }
+.actions > div { display: flex; flex-wrap: wrap; gap: 10px; }
+.opt { font: 22px/1.3 var(--font-ko); min-width: 4.5em; }
+.opt[aria-checked=true] { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+.opt.is-ok { border-color: var(--ok); background: var(--ok-bg); color: var(--ok); }
+.opt.is-bad { border-color: var(--bad); background: var(--bad-bg); color: var(--bad); }
+.radio { display: flex; gap: 10px; align-items: center; cursor: pointer; }
+.radio input { width: 18px; height: 18px; accent-color: var(--accent); margin: 0; }
+.note { border-radius: var(--r); padding: 12px 14px; display: grid; gap: 6px; border-left: 3px solid; }
+.note.ok { background: var(--ok-bg); border-color: var(--ok); }
+.note.bad { background: var(--bad-bg); border-color: var(--bad); }
+.note.warn { background: var(--warn-bg); border-color: var(--warn); }
+.verdict { font-weight: 600; }
+.note.ok .verdict { color: var(--ok); }
+.note.bad .verdict { color: var(--bad); }
+.note.warn .verdict { color: var(--warn); }
+.grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.cell { width: 40px; height: 40px; padding: 0; font: 500 14px var(--font-mono); border-radius: 6px; }
+.cell.done { border-color: var(--ink-soft); }
+.cell.ok { background: var(--ok-bg); color: var(--ok); border-color: var(--ok); }
+.cell.bad { background: var(--bad-bg); color: var(--bad); border-color: var(--bad); }
+.cell.cur { box-shadow: 0 0 0 2px var(--accent); }
+.bank, .line { display: flex; flex-wrap: wrap; gap: 8px; min-height: 56px; padding: 8px; border-radius: var(--r); }
+.line { border: 1px dashed var(--cell); background: var(--paper); }
+.chunk { font: 20px/1.3 var(--font-ko); padding: 8px 12px; }
+.wg { display: flex; flex-wrap: wrap; border-top: 1px solid var(--cell); border-left: 1px solid var(--cell); width: max-content; max-width: 100%; }
+.wc { width: 34px; height: 34px; display: grid; place-items: center; border-right: 1px solid var(--cell); border-bottom: 1px solid var(--cell); font: 20px var(--font-ko); background: var(--paper); }
+.parts { font: 15px var(--font-ko); color: var(--ink-soft); min-height: 1.4em; }
+.kbd { display: grid; gap: 6px; user-select: none; -webkit-user-select: none; }
+.krow { display: flex; gap: 5px; justify-content: center; }
+.key { flex: 1 1 0; max-width: 54px; min-width: 0; padding: 10px 0; font: 18px var(--font-ko); }
+.key.wide { max-width: 128px; flex-grow: 2; font: 14px var(--font-ui); }
+.key.space { max-width: 280px; flex-grow: 6; }
+.key.on { background: var(--accent-soft); border-color: var(--accent); }
+textarea.result { font: 13px/1.5 var(--font-mono); min-height: 200px; white-space: pre; overflow: auto; }
+.foot { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: center; }
+@media (max-width: 480px) {
+  .exhibit { font-size: 22px; }
+  .key { font-size: 16px; padding: 9px 0; }
+  .card { padding: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
+</style>
+
+<header class="bar">
+  <div class="bar-in">
+    <h1><span class="badge" id="badge"></span><span id="set-title"></span></h1>
+    <span class="meta" id="meta"></span>
+  </div>
+  <div class="fill" id="fill"></div>
+</header>
+
+<main>
+  <div class="note warn" id="banner" hidden></div>
+
+  <section class="stack" id="intro">
+    <h2 id="intro-title"></h2>
+    <p id="intro-text"></p>
+    <p class="soft" id="intro-mode"></p>
+    <div class="row" id="voice-row" hidden>
+      <label for="voice-select" id="voice-label"></label>
+      <select id="voice-select"></select>
+      <button type="button" id="voice-test"></button>
+    </div>
+    <div class="row"><button type="button" class="primary" id="start"></button></div>
+  </section>
+
+  <section class="card" id="card" hidden aria-live="polite"></section>
+
+  <section class="stack" id="kbd-wrap" hidden>
+    <div class="row">
+      <label class="radio"><input type="checkbox" id="kbd-toggle"><span id="kbd-label"></span></label>
+      <span class="soft" id="kbd-hint"></span>
+    </div>
+    <div class="kbd" id="kbd" hidden></div>
+  </section>
+
+  <nav class="stack" id="nav" hidden>
+    <div class="grid" id="grid"></div>
+  </nav>
+
+  <section class="stack" id="done" hidden>
+    <h2 id="done-title"></h2>
+    <p id="done-note"></p>
+    <textarea class="result" id="result" readonly spellcheck="false"></textarea>
+    <div class="row"><button type="button" class="primary" id="copy"></button><span class="soft" id="copy-status" role="status"></span></div>
+    <div class="stack" id="cards-wrap">
+      <h2 id="cards-title"></h2>
+      <p class="soft" id="cards-note"></p>
+      <textarea class="result" id="cards" readonly spellcheck="false"></textarea>
+      <div class="row"><button type="button" id="cards-copy"></button><span class="soft" id="cards-status" role="status"></span></div>
+    </div>
+  </section>
+
+  <div class="foot" id="foot" hidden>
+    <button type="button" id="finish"></button>
+    <button type="button" class="link" id="reset"></button>
+  </div>
+</main>
+
+<script type="application/json" id="kt-data">/*KT-DATA*/</script>
+<script>
+(function () {
+  "use strict";
+
+  var STR = {
+    ru: {
+      probe: "Проба", drill: "Тренировка",
+      probeNote: "Проверки и подсказок не будет: ответы разберёт тьютор. Если не знаете ответа, пропустите задание.",
+      drillNote: "После каждого ответа — проверка и объяснение. Подсказки открывайте, только если застряли: тьютор это увидит.",
+      count: function (n) { return n + " " + plural(n, "задание", "задания", "заданий"); },
+      start: "Начать", resume: "Продолжить",
+      prev: "Назад", next: "Далее", check: "Проверить",
+      finish: "Завершить", finishAll: "Подтвердить завершение",
+      unanswered: function (n) { return "Точно? Без ответа: " + n; },
+      unchecked: function (n) { return "Точно? Не проверено: " + n; },
+      hint: function (i) { return "Подсказка " + i; },
+      reason: "Почему? Коротко, своими словами",
+      ok: "Верно", okHint: "Верно, с подсказкой", bad: "Неверно", noaudioVerdict: "Нет звука — не засчитывается",
+      answer: "Ответ: ", also: "Также верно: ",
+      clean: "Ошибок нет", hasError: "Есть ошибка — исправьте предложение:",
+      play: "Прослушать", slow: "Медленнее",
+      noVoice: "В этом браузере нет корейского голоса. Нажмите «Нет звука» — это не будет считаться ошибкой.",
+      noAudio: "Нет звука", voice: "Голос", test: "Проверить звук",
+      kbd: "Экранная клавиатура", kbdHint: "печатает в конец последнего выбранного поля",
+      shift: "Shift", back: "Стереть", space: "Пробел",
+      orderHint: "Нажимайте на части по порядку. Часть из ответа можно вернуть нажатием.",
+      placeholder: "Ответ хангылем",
+      situation: "Ситуация",
+      types: { choice: "Выбор", text: "Ответ", fix: "Найдите ошибку", order: "Порядок слов", listen: "Аудирование", dictation: "Диктант" },
+      doneTitle: "Результат",
+      doneNote: "Скопируйте блок целиком и вставьте в чат с тьютором.",
+      copy: "Скопировать", copied: "Скопировано", copyFail: "Текст выделен — нажмите ⌘C или Ctrl+C.",
+      reset: "Начать заново", resetSure: "Стереть все ответы?",
+      restored: "Ответы восстановлены из этого браузера.",
+      noStorage: "Автосохранение недоступно в этом окне: не закрывайте страницу, пока не закончите.",
+      noData: "В странице нет данных упражнения.",
+      left: "осталось ",
+      copyEl: "Копировать", transcript: "Звучало",
+      cardCopy: "Скопировать карточку",
+      cardsTitle: "Карточки",
+      cardsNote: "По строке на карточку: лицевая сторона, табуляция, оборот. Anki: Файл → Импорт, разделитель — табуляция. Quizlet: Импорт, между термином и определением — табуляция.",
+      cardsProbe: "В пробе нет ключей, поэтому карточек с ответами здесь нет: тьютор пришлёт их после разбора."
+    },
+    en: {
+      probe: "Probe", drill: "Drill",
+      probeNote: "No checking and no hints: your tutor will review the answers. If you do not know an answer, skip the item.",
+      drillNote: "Each answer is checked and explained. Open hints only when stuck: your tutor will see them.",
+      count: function (n) { return n + (n === 1 ? " item" : " items"); },
+      start: "Start", resume: "Continue",
+      prev: "Back", next: "Next", check: "Check",
+      finish: "Finish", finishAll: "Confirm finish",
+      unanswered: function (n) { return "Sure? Unanswered: " + n; },
+      unchecked: function (n) { return "Sure? Unchecked: " + n; },
+      hint: function (i) { return "Hint " + i; },
+      reason: "Why? Briefly, in your own words",
+      ok: "Correct", okHint: "Correct, with a hint", bad: "Not correct", noaudioVerdict: "No audio — not scored",
+      answer: "Answer: ", also: "Also correct: ",
+      clean: "No error", hasError: "There is an error — correct the sentence:",
+      play: "Play", slow: "Slower",
+      noVoice: "This browser has no Korean voice. Press “No audio”; it will not count as a mistake.",
+      noAudio: "No audio", voice: "Voice", test: "Test audio",
+      kbd: "On-screen keyboard", kbdHint: "types at the end of the last selected field",
+      shift: "Shift", back: "Delete", space: "Space",
+      orderHint: "Tap the parts in order. Tap a part in the answer to send it back.",
+      placeholder: "Answer in Hangul",
+      situation: "Situation",
+      types: { choice: "Choice", text: "Answer", fix: "Find the error", order: "Word order", listen: "Listening", dictation: "Dictation" },
+      doneTitle: "Result",
+      doneNote: "Copy the whole block and paste it into the chat with your tutor.",
+      copy: "Copy", copied: "Copied", copyFail: "Text selected — press ⌘C or Ctrl+C.",
+      reset: "Start over", resetSure: "Erase all answers?",
+      restored: "Answers restored from this browser.",
+      noStorage: "Autosave is unavailable in this window: keep the page open until you finish.",
+      noData: "This page has no exercise data.",
+      left: "left ",
+      copyEl: "Copy", transcript: "You heard",
+      cardCopy: "Copy flashcard",
+      cardsTitle: "Flashcards",
+      cardsNote: "One card per line: front, tab, back. Anki: File → Import, separator Tab. Quizlet: Import, between term and definition Tab.",
+      cardsProbe: "A probe carries no keys, so there are no answer cards here: your tutor will send them after the review."
+    }
+  };
+
+  function plural(n, one, few, many) {
+    var a = n % 10, b = n % 100;
+    return a === 1 && b !== 11 ? one : a >= 2 && a <= 4 && (b < 12 || b > 14) ? few : many;
+  }
+  function $(id) { return document.getElementById(id); }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  // Metalanguage text; `backticks` mark Korean fragments.
+  function rich(node, s) {
+    String(s).split("`").forEach(function (part, i) {
+      if (!part) return;
+      if (i % 2) { var k = el("span", "ko-chip", part); k.lang = "ko"; node.append(k); }
+      else node.append(part);
+    });
+    return node;
+  }
+  // Korean exhibit; ___ marks the gap.
+  function exhibit(s) {
+    var d = el("div", "exhibit"); d.lang = "ko";
+    String(s).split("___").forEach(function (part, i) { if (i) d.append(el("span", "gap", "___")); if (part) d.append(part); });
+    return d;
+  }
+
+  // ---- copying: every piece of material can go to a flashcard app
+  function plain(s) { return String(s == null ? "" : s).replace(/`/g, ""); }
+  var ICON = '<svg class="cc" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5.5" y="5.5" width="8.5" height="8.5" rx="1.5"/><path d="M10.5 5.5V3.5a1.5 1.5 0 0 0-1.5-1.5H3.5A1.5 1.5 0 0 0 2 3.5V9a1.5 1.5 0 0 0 1.5 1.5h2"/></svg>' +
+    '<svg class="ck" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>';
+  // Clipboard API first; then execCommand; then select the text so the viewer can press the shortcut.
+  function copyText(text, node, cb) {
+    function fallback() {
+      var ta = el("textarea"); ta.value = text; ta.setAttribute("readonly", "");
+      ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.append(ta); ta.select();
+      var ok = false; try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+      ta.remove();
+      if (!ok && node) {
+        if (node.select) { node.focus(); node.select(); }
+        else { var sel = window.getSelection(), r = document.createRange(); r.selectNodeContents(node); sel.removeAllRanges(); sel.addRange(r); }
+      }
+      cb(ok);
+    }
+    try { navigator.clipboard.writeText(text).then(function () { cb(true); }, fallback); } catch (e) { fallback(); }
+  }
+  function flash(node, okText, idleText, ok) {
+    node.textContent = ok ? okText : T.copyFail;
+    setTimeout(function () { node.textContent = idleText; }, ok ? 1200 : 4000);
+  }
+  function withCopy(node, text) {
+    var w = el("div", "cpw"), b = el("button", "cp"); b.type = "button";
+    b.innerHTML = ICON; b.setAttribute("aria-label", T.copyEl); b.title = T.copyEl;
+    b.addEventListener("click", function () {
+      copyText(typeof text === "function" ? text() : text, node, function (ok) {
+        b.classList.toggle("done", ok); b.title = ok ? T.copied : T.copyFail;
+        setTimeout(function () { b.classList.remove("done"); b.title = T.copyEl; }, 1200);
+      });
+    });
+    w.append(node, b); return w;
+  }
+
+  var D;
+  try { D = JSON.parse($("kt-data").textContent); } catch (e) { D = null; }
+  if (!D || !D.items || !D.items.length) {
+    var b0 = $("banner"); b0.textContent = STR.ru.noData; b0.hidden = false; $("intro").hidden = true; return;
+  }
+  var T = STR[D.lang] || STR.ru;
+  var items = D.items;
+  var drill = D.mode === "drill";
+  var KEY = "kt:" + D.id;
+  var hasAudio = items.some(function (q) { return q.type === "listen" || q.type === "dictation"; });
+  var hasKo = items.some(function (q) { return q.type === "text" || q.type === "dictation" || q.type === "fix"; });
+  document.documentElement.lang = D.lang || "ru";
+
+  function fresh() {
+    return { v: 1, started: false, finished: false, cur: 0, a: {}, chk: {}, h: {}, t: {}, plays: {}, reason: {}, elapsed: 0, voice: "", kbd: false, kbdUsed: false };
+  }
+  var S = fresh();
+
+  // ---- persistence: every read and write guarded; the page works without storage
+  var storageOk = (function () {
+    try { localStorage.setItem("kt:probe", "1"); localStorage.removeItem("kt:probe"); return true; } catch (e) { return false; }
+  })();
+  var restored = false;
+  if (storageOk) {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (raw) { var saved = JSON.parse(raw); if (saved && saved.v === 1) { S = Object.assign(fresh(), saved); restored = S.started; } }
+    } catch (e) { /* start clean */ }
+  }
+  var saveTimer = null;
+  function save() {
+    if (!storageOk) return;
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* ignore */ } }, 300);
+  }
+
+  // ---- seeded shuffle: stable across reloads, position carries no information
+  function rng(seed) {
+    var h = 1779033703 ^ seed.length;
+    for (var i = 0; i < seed.length; i++) { h = Math.imul(h ^ seed.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; }
+    return function () {
+      h = Math.imul(h ^ h >>> 16, 2246822507); h = Math.imul(h ^ h >>> 13, 3266489909);
+      return ((h ^= h >>> 16) >>> 0) / 4294967296;
+    };
+  }
+  function order(n, seed, avoidIdentity) {
+    var r = rng(seed), idx = [];
+    for (var i = 0; i < n; i++) idx.push(i);
+    for (var j = n - 1; j > 0; j--) { var k = Math.floor(r() * (j + 1)); var t = idx[j]; idx[j] = idx[k]; idx[k] = t; }
+    if (avoidIdentity && n > 1 && idx.every(function (v, i) { return v === i; })) idx.push(idx.shift());
+    return idx;
+  }
+
+  // ---- answers
+  function norm(s, spacing) {
+    var t = String(s).normalize("NFC").replace(/\s+/g, " ").trim().replace(/[.?!。…,~]+$/u, "").trim();
+    return spacing === "strict" ? t : t.replace(/ /g, "");
+  }
+  function seqText(seq) { return Array.isArray(seq) ? seq.join(" ") : String(seq); }
+  function answered(q) {
+    var a = S.a[q.id];
+    if (a === undefined || a === null) return false;
+    if (a === "NOAUDIO") return true;
+    if (q.type === "text" || q.type === "dictation") return String(a).trim() !== "";
+    if (q.type === "fix") return a.clean === true || (typeof a.text === "string" && a.text.trim() !== "");
+    if (q.type === "order") return a.length === q.chunks.length;
+    return true;
+  }
+  function shown(q) {
+    var a = S.a[q.id];
+    if (!answered(q)) return "—";
+    if (a === "NOAUDIO") return "NOAUDIO";
+    if (q.type === "choice" || q.type === "listen") return q.options[a];
+    if (q.type === "fix") return a.clean ? "CLEAN" : a.text.trim();
+    if (q.type === "order") return a.map(function (i) { return q.chunks[i]; }).join(" ");
+    return String(a).trim();
+  }
+  function correct(q) {
+    var a = S.a[q.id];
+    if (q.type === "choice" || q.type === "listen") return a === q.answer;
+    if (q.type === "fix") {
+      if (q.clean) return a.clean === true;
+      return !a.clean && q.accept.some(function (x) { return norm(x, q.spacing) === norm(a.text, q.spacing); });
+    }
+    if (q.type === "order") return q.accept.some(function (x) { return norm(seqText(x), "strict") === norm(shown(q), "strict"); });
+    return q.accept.some(function (x) { return norm(x, q.spacing) === norm(a, q.spacing); });
+  }
+  function keyText(q) {
+    if (q.type === "choice" || q.type === "listen") return q.options[q.answer];
+    if (q.type === "fix" && q.clean) return T.clean;
+    return seqText(q.accept[0]);
+  }
+
+  function oneLine(s) { return plain(s).replace(/[\t\r\n]+/g, " ").trim(); }
+  function fullAnswer(q) {
+    var k = keyText(q);
+    if (q.type === "fix") return q.clean ? q.ko : k;
+    if (q.ko && q.ko.indexOf("___") >= 0 && (q.type === "choice" || q.type === "text")) return q.ko.replace("___", k);
+    return k;
+  }
+  function cardFront(q) {
+    if (q.card && q.card.front) return oneLine(q.card.front);
+    if (q.type === "order") return oneLine(q.prompt || q.chunks.join(" / "));
+    if (q.type === "listen") return oneLine(q.options.join(" / "));
+    if (q.type === "dictation") return oneLine(q.say || q.prompt);
+    var f = q.ko || q.prompt || "";
+    if (q.type === "choice") f += " (" + q.options.join(" / ") + ")";
+    return oneLine((q.context ? q.context + " — " : "") + f);
+  }
+  function cardBack(q) {
+    if (q.card && q.card.back) return oneLine(q.card.back);
+    var b = q.type === "dictation" ? "" : fullAnswer(q);
+    if (q.why) b += (b ? " — " : "") + q.why;
+    return oneLine(b);
+  }
+  function cardLine(q) { return cardFront(q) + "\t" + cardBack(q); }
+
+  // ---- audio: browser speech synthesis with a Korean voice, or a supplied recording
+  var voices = [], voicesChecked = false, ready = false;  // ready: set once the page is fully wired
+  var LOW = /^(Eddy|Flo|Grandma|Grandpa|Reed|Rocko|Sandy|Shelley)\b/;
+  function vscore(v) { return /Yuna|Юна|유나|Google|Premium|Enhanced|Siri/i.test(v.name) ? 2 : LOW.test(v.name) ? 0 : 1; }
+  function loadVoices() {
+    if (!("speechSynthesis" in window)) { voicesChecked = true; return; }
+    var list = speechSynthesis.getVoices().filter(function (v) { return /^ko/i.test(v.lang); });
+    list.sort(function (a, b) { return vscore(b) - vscore(a); });
+    if (list.length) voicesChecked = true;
+    voices = list;
+    if (!S.voice && voices.length) S.voice = voices[0].name;
+    fillVoices();
+  }
+  function currentVoice() {
+    for (var i = 0; i < voices.length; i++) if (voices[i].name === S.voice) return voices[i];
+    return voices[0] || null;
+  }
+  function noVoice() { return voicesChecked && !voices.length; }
+  function speak(q, slow) {
+    if (q.audio) {
+      try { var au = new Audio(q.audio); au.playbackRate = slow ? 0.75 : 1; au.play(); } catch (e) { /* ignore */ }
+    } else if ("speechSynthesis" in window) {
+      var u = new SpeechSynthesisUtterance(q.say);
+      u.lang = "ko-KR"; var v = currentVoice(); if (v) u.voice = v;
+      u.rate = slow ? 0.7 : 0.95;
+      speechSynthesis.cancel(); speechSynthesis.speak(u);
+    }
+    if (q.id) { S.plays[q.id] = (S.plays[q.id] || 0) + 1; save(); }
+  }
+  function fillVoices() {
+    var sel = $("voice-select");
+    sel.replaceChildren();
+    voices.forEach(function (v) { var o = el("option", null, v.name); o.value = v.name; if (v.name === S.voice) o.selected = true; sel.append(o); });
+    $("voice-row").hidden = !hasAudio || !voices.length;
+    if (ready && S.started && !S.finished) renderCard();
+  }
+  if ("speechSynthesis" in window) {
+    loadVoices();
+    speechSynthesis.addEventListener("voiceschanged", loadVoices);
+  }
+  setTimeout(function () { voicesChecked = true; if (!voices.length) { $("voice-row").hidden = true; if (ready && S.started && !S.finished) renderCard(); } }, 1500);
+
+  // ---- Hangul composition for the on-screen keyboard (standard two-set layout)
+  var CHO = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ";
+  var JUNG = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ";
+  var JONG = ["ㄱ", "ㄲ", "ㄳ", "ㄴ", "ㄵ", "ㄶ", "ㄷ", "ㄹ", "ㄺ", "ㄻ", "ㄼ", "ㄽ", "ㄾ", "ㄿ", "ㅀ", "ㅁ", "ㅂ", "ㅄ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+  JONG.unshift("");
+  var VJ = { "ㅗㅏ": "ㅘ", "ㅗㅐ": "ㅙ", "ㅗㅣ": "ㅚ", "ㅜㅓ": "ㅝ", "ㅜㅔ": "ㅞ", "ㅜㅣ": "ㅟ", "ㅡㅣ": "ㅢ" };
+  var CJ = { "ㄱㅅ": "ㄳ", "ㄴㅈ": "ㄵ", "ㄴㅎ": "ㄶ", "ㄹㄱ": "ㄺ", "ㄹㅁ": "ㄻ", "ㄹㅂ": "ㄼ", "ㄹㅅ": "ㄽ", "ㄹㅌ": "ㄾ", "ㄹㅍ": "ㄿ", "ㄹㅎ": "ㅀ", "ㅂㅅ": "ㅄ" };
+  function invert(m) { var r = {}; Object.keys(m).forEach(function (k) { r[m[k]] = k; }); return r; }
+  var VJr = invert(VJ), CJr = invert(CJ);
+  function dec(ch) {
+    var c = ch ? ch.charCodeAt(0) - 0xAC00 : -1;
+    if (c < 0 || c > 11171) return null;
+    return { l: Math.floor(c / 588), v: Math.floor((c % 588) / 28), t: c % 28 };
+  }
+  function com(l, v, t) { return String.fromCharCode(0xAC00 + (l * 21 + v) * 28 + t); }
+  function typeJamo(s, j) {
+    var last = s.slice(-1), head = s.slice(0, -1), d = dec(last);
+    if (JUNG.indexOf(j) >= 0) {
+      var vi = JUNG.indexOf(j);
+      if (d && d.t) {
+        var tj = JONG[d.t], pair = CJr[tj];
+        if (pair) return head + com(d.l, d.v, JONG.indexOf(pair[0])) + com(CHO.indexOf(pair[1]), vi, 0);
+        if (CHO.indexOf(tj) >= 0) return head + com(d.l, d.v, 0) + com(CHO.indexOf(tj), vi, 0);
+        return s + j;
+      }
+      if (d) { var cv = VJ[JUNG[d.v] + j]; return cv ? head + com(d.l, JUNG.indexOf(cv), 0) : s + j; }
+      if (last && CHO.indexOf(last) >= 0) return head + com(CHO.indexOf(last), vi, 0);
+      if (VJ[last + j]) return head + VJ[last + j];
+      return s + j;
+    }
+    if (d && !d.t) { var ti = JONG.indexOf(j); return ti > 0 ? head + com(d.l, d.v, ti) : s + j; }
+    if (d && d.t) { var cc = CJ[JONG[d.t] + j]; return cc ? head + com(d.l, d.v, JONG.indexOf(cc)) : s + j; }
+    return s + j;
+  }
+  function backJamo(s) {
+    var last = s.slice(-1), head = s.slice(0, -1), d = dec(last);
+    if (!d) return head;
+    if (d.t) { var pair = CJr[JONG[d.t]]; return head + com(d.l, d.v, pair ? JONG.indexOf(pair[0]) : 0); }
+    var pv = VJr[JUNG[d.v]];
+    if (pv) return head + com(d.l, JUNG.indexOf(pv[0]), 0);
+    return head + CHO[d.l];
+  }
+  function parts(ch) {
+    var d = dec(ch);
+    if (!d) return "";
+    return [CHO[d.l], JUNG[d.v], JONG[d.t]].filter(Boolean).join(" + ") + " = " + ch;
+  }
+
+  var ROWS = [["ㅂ", "ㅈ", "ㄷ", "ㄱ", "ㅅ", "ㅛ", "ㅕ", "ㅑ", "ㅐ", "ㅔ"], ["ㅁ", "ㄴ", "ㅇ", "ㄹ", "ㅎ", "ㅗ", "ㅓ", "ㅏ", "ㅣ"], ["ㅋ", "ㅌ", "ㅊ", "ㅍ", "ㅠ", "ㅜ", "ㅡ"]];
+  var SHIFT = { "ㅂ": "ㅃ", "ㅈ": "ㅉ", "ㄷ": "ㄸ", "ㄱ": "ㄲ", "ㅅ": "ㅆ", "ㅐ": "ㅒ", "ㅔ": "ㅖ" };
+  var shiftOn = false, target = null;
+  function buildKeyboard() {
+    var k = $("kbd"); k.replaceChildren();
+    ROWS.forEach(function (row, ri) {
+      var r = el("div", "krow");
+      if (ri === 2) {
+        var sh = el("button", "key wide" + (shiftOn ? " on" : ""), T.shift); sh.type = "button";
+        sh.setAttribute("aria-pressed", String(shiftOn));
+        sh.addEventListener("click", function () { shiftOn = !shiftOn; buildKeyboard(); });
+        r.append(sh);
+      }
+      row.forEach(function (j) {
+        var ch = shiftOn && SHIFT[j] ? SHIFT[j] : j;
+        var b = el("button", "key", ch); b.type = "button"; b.lang = "ko";
+        b.addEventListener("click", function () { press(ch); });
+        r.append(b);
+      });
+      if (ri === 2) {
+        var bk = el("button", "key wide", T.back); bk.type = "button";
+        bk.addEventListener("click", function () { edit(backJamo); });
+        r.append(bk);
+      }
+      k.append(r);
+    });
+    var r4 = el("div", "krow"), sp = el("button", "key space wide", T.space); sp.type = "button";
+    sp.addEventListener("click", function () { edit(function (s) { return s + " "; }); });
+    r4.append(sp); k.append(r4);
+  }
+  function press(j) { edit(function (s) { return typeJamo(s, j); }); if (shiftOn) { shiftOn = false; buildKeyboard(); } }
+  function edit(fn) {
+    if (!target || !document.body.contains(target) || target.disabled) {
+      target = document.querySelector("#card input.ko-in:not(:disabled)");
+      if (!target) return;
+    }
+    target.value = fn(target.value);
+    S.kbdUsed = true;
+    target.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+
+  // ---- rendering
+  function mm(s) { return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+  function renderBar() {
+    $("badge").textContent = drill ? T.drill : T.probe;
+    $("set-title").textContent = D.title || "";
+    var done = items.filter(function (q) { return drill ? S.chk[q.id] : answered(q); }).length;
+    $("fill").style.width = (100 * done / items.length) + "%";
+    var time = D.time_limit_min ? T.left + mm(Math.max(0, D.time_limit_min * 60 - S.elapsed)) : mm(S.elapsed);
+    $("meta").textContent = S.started ? (S.cur + 1) + " / " + items.length + " · " + time : T.count(items.length);
+  }
+  function renderGrid() {
+    var g = $("grid"); g.replaceChildren();
+    items.forEach(function (q, i) {
+      var c = el("button", "cell", String(i + 1)); c.type = "button";
+      var chk = S.chk[q.id];
+      if (drill && chk && chk.ok === true) c.classList.add("ok");
+      else if (drill && chk && chk.ok === false) c.classList.add("bad");
+      else if (answered(q)) c.classList.add("done");
+      if (i === S.cur) { c.classList.add("cur"); c.setAttribute("aria-current", "step"); }
+      c.addEventListener("click", function () { go(i); });
+      g.append(c);
+    });
+  }
+  function wgStrip(text) {
+    var w = el("div", "wg"); w.lang = "ko"; w.setAttribute("aria-hidden", "true");
+    var chars = Array.from(String(text || "").normalize("NFC")).slice(0, 60);
+    chars.forEach(function (ch) { w.append(el("div", "wc", ch === " " ? "" : ch)); });
+    w.hidden = !chars.length;
+    return w;
+  }
+  function koInput(q, value, locked, onInput) {
+    var box = el("div", "stack");
+    var inp = el("input", "ko-in"); inp.type = "text"; inp.lang = "ko";
+    inp.id = "in-" + q.id; inp.value = value || ""; inp.placeholder = T.placeholder;
+    inp.autocomplete = "off"; inp.spellcheck = false; inp.setAttribute("autocapitalize", "off");
+    if (S.kbd) inp.setAttribute("inputmode", "none");
+    inp.disabled = locked;
+    var strip = wgStrip(inp.value), pt = el("div", "parts");
+    pt.hidden = !S.kbd;
+    inp.addEventListener("focus", function () { target = inp; });
+    inp.addEventListener("input", function () {
+      onInput(inp.value);
+      var ns = wgStrip(inp.value); strip.replaceWith(ns); strip = ns;
+      pt.textContent = parts(inp.value.slice(-1));
+      var ck = $("check-btn"); if (ck) ck.disabled = !answered(q);
+      save(); renderBar(); renderGrid();
+    });
+    inp.addEventListener("keydown", function (e) {
+      if (e.key !== "Enter" || e.isComposing || e.keyCode === 229) return;
+      e.preventDefault();
+      if (drill && !S.chk[q.id] && answered(q)) check(q); else if (!drill) go(S.cur + 1);
+    });
+    pt.textContent = parts(inp.value.slice(-1));
+    box.append(inp, strip, pt);
+    if (!locked) target = inp;
+    return box;
+  }
+  function audioRow(q, body, locked) {
+    if (noVoice() && !q.audio) {
+      var n = el("div", "note warn"); n.append(el("p", null, T.noVoice));
+      if (!locked) {
+        var na = el("button", null, T.noAudio); na.type = "button";
+        na.addEventListener("click", function () { S.a[q.id] = "NOAUDIO"; save(); renderAll(); });
+        var r0 = el("div", "row"); r0.append(na); n.append(r0);
+      }
+      body.append(n); return;
+    }
+    var r = el("div", "row");
+    var p = el("button", "primary", T.play); p.type = "button";
+    p.addEventListener("click", function () { speak(q, false); });
+    var s = el("button", null, T.slow); s.type = "button";
+    s.addEventListener("click", function () { speak(q, true); });
+    r.append(p, s);
+    body.append(r);
+  }
+  function options(q, body, locked) {
+    var box = el("div", "opts row"); box.setAttribute("role", "radiogroup");
+    var idx = q.shuffle === false ? q.options.map(function (_, i) { return i; }) : order(q.options.length, D.id + ":" + q.id, false);
+    var chk = S.chk[q.id];
+    idx.forEach(function (i) {
+      var b = el("button", "opt", q.options[i]); b.type = "button"; b.lang = "ko";
+      b.setAttribute("role", "radio"); b.setAttribute("aria-checked", String(S.a[q.id] === i));
+      b.disabled = locked;
+      if (drill && chk && chk.ok !== null) {
+        if (i === q.answer) b.classList.add("is-ok");
+        else if (S.a[q.id] === i) b.classList.add("is-bad");
+      }
+      b.addEventListener("click", function () { S.a[q.id] = i; save(); renderAll(); });
+      box.append(b);
+    });
+    body.append(withCopy(box, q.options.join(" / ")));
+  }
+  var RENDER = {
+    choice: function (q, body, locked) { options(q, body, locked); },
+    listen: function (q, body, locked) { audioRow(q, body, locked); options(q, body, locked); },
+    text: function (q, body, locked) { body.append(koInput(q, S.a[q.id], locked, function (v) { S.a[q.id] = v; })); },
+    dictation: function (q, body, locked) {
+      audioRow(q, body, locked);
+      if (S.a[q.id] !== "NOAUDIO") body.append(koInput(q, S.a[q.id], locked, function (v) { S.a[q.id] = v; }));
+    },
+    fix: function (q, body, locked) {
+      var a = S.a[q.id] || {};
+      var name = "fix-" + q.id;
+      function radio(label, checked, onPick) {
+        var l = el("label", "radio"), r = el("input"); r.type = "radio"; r.name = name; r.checked = checked; r.disabled = locked;
+        r.addEventListener("change", onPick);
+        l.append(r, el("span", null, label)); return l;
+      }
+      body.append(radio(T.clean, a.clean === true, function () { S.a[q.id] = { clean: true }; save(); renderAll(); }));
+      body.append(radio(T.hasError, a.clean === false, function () { S.a[q.id] = { clean: false, text: q.ko }; save(); renderAll(); }));
+      if (a.clean === false) body.append(koInput(q, a.text, locked, function (v) { S.a[q.id] = { clean: false, text: v }; }));
+    },
+    order: function (q, body, locked) {
+      var picked = Array.isArray(S.a[q.id]) ? S.a[q.id] : [];
+      var line = el("div", "line"), bank = el("div", "bank");
+      line.lang = "ko"; bank.lang = "ko";
+      picked.forEach(function (i, pos) {
+        var b = el("button", "chunk", q.chunks[i]); b.type = "button"; b.disabled = locked;
+        b.addEventListener("click", function () { picked.splice(pos, 1); S.a[q.id] = picked.slice(); save(); renderAll(); });
+        line.append(b);
+      });
+      order(q.chunks.length, D.id + ":" + q.id, true).forEach(function (i) {
+        if (picked.indexOf(i) >= 0) return;
+        var b = el("button", "chunk", q.chunks[i]); b.type = "button"; b.disabled = locked;
+        b.addEventListener("click", function () { S.a[q.id] = picked.concat([i]); save(); renderAll(); });
+        bank.append(b);
+      });
+      if (!locked) body.append(el("p", "soft", T.orderHint));
+      body.append(withCopy(line, function () { return picked.map(function (i) { return q.chunks[i]; }).join(" "); }));
+      body.append(withCopy(bank, q.chunks.join(" / ")));
+    }
+  };
+  function feedback(q) {
+    var c = S.chk[q.id];
+    var n = el("div", "note " + (c.ok === null ? "warn" : c.ok ? "ok" : "bad"));
+    n.append(el("div", "verdict", c.ok === null ? T.noaudioVerdict : c.ok ? (c.hint ? T.okHint : T.ok) : T.bad));
+    if (c.ok === false) {
+      var p = el("p", null, T.answer); var k = el("span", "ko-chip", keyText(q)); k.lang = "ko"; p.append(k);
+      n.append(withCopy(p, keyText(q)));
+    }
+    if (c.ok !== null && q.accept && q.accept.length > 1 && !(q.type === "fix" && q.clean)) {
+      var alt = el("p", "soft", T.also);
+      q.accept.slice(1).forEach(function (x, i) { if (i) alt.append(" · "); var k2 = el("span", "ko-chip", seqText(x)); k2.lang = "ko"; alt.append(k2); });
+      n.append(withCopy(alt, q.accept.slice(1).map(seqText).join(" / ")));
+    }
+    if (q.why) n.append(withCopy(rich(el("p"), q.why), plain(q.why)));
+    if (c.ok !== null) {
+      var cb = el("button", "link", T.cardCopy); cb.type = "button";
+      cb.addEventListener("click", function () { copyText(cardLine(q), null, function (ok) { flash(cb, T.copied, T.cardCopy, ok); }); });
+      n.append(cb);
+    }
+    return n;
+  }
+  function renderCard() {
+    var q = items[S.cur], card = $("card");
+    var locked = S.finished || (drill && !!S.chk[q.id]);
+    card.replaceChildren();
+    card.append(el("div", "eyebrow", (S.cur + 1) + " · " + (T.types[q.type] || q.type)));
+    if (q.context) {
+      var s = el("div", "situation"); s.append(el("div", "eyebrow", T.situation), rich(el("p"), q.context));
+      card.append(withCopy(s, plain(q.context)));
+    }
+    if (q.prompt) card.append(withCopy(rich(el("p"), q.prompt), plain(q.prompt)));
+    if (q.ko) { var ex = exhibit(q.ko); card.append(withCopy(ex, q.ko)); }
+    var body = el("div", "stack"); card.append(body);
+    RENDER[q.type](q, body, locked);
+    if (locked && q.say && (q.type === "listen" || q.type === "dictation")) {
+      var tr = el("div", "stack"); var trp = el("p", "transcript", q.say); trp.lang = "ko";
+      tr.append(el("div", "eyebrow", T.transcript), withCopy(trp, q.say));
+      body.append(tr);
+    }
+    if (drill && q.hints && q.hints.length) {
+      var used = S.h[q.id] || 0;
+      q.hints.slice(0, used).forEach(function (h, i) {
+        var hn = el("div", "note warn"); hn.append(el("div", "verdict", T.hint(i + 1)), withCopy(rich(el("p"), h), plain(h))); card.append(hn);
+      });
+      if (!locked && used < q.hints.length) {
+        var hb = el("button", "link", T.hint(used + 1)); hb.type = "button";
+        hb.addEventListener("click", function () { S.h[q.id] = used + 1; save(); renderCard(); });
+        card.append(hb);
+      }
+    }
+    if (q.reason) {
+      var ta = el("textarea"); ta.id = "why-" + q.id; ta.rows = 2; ta.placeholder = T.reason;
+      ta.value = S.reason[q.id] || ""; ta.disabled = S.finished;
+      ta.addEventListener("input", function () { S.reason[q.id] = ta.value; save(); });
+      card.append(ta);
+    }
+    if (drill && S.chk[q.id]) card.append(feedback(q));
+    var acts = el("div", "actions"), left = el("div"), right = el("div");
+    var prev = el("button", null, T.prev); prev.type = "button"; prev.disabled = S.cur === 0;
+    prev.addEventListener("click", function () { go(S.cur - 1); });
+    left.append(prev);
+    if (drill && !locked) {
+      var ck = el("button", "primary", T.check); ck.type = "button"; ck.id = "check-btn"; ck.disabled = !answered(q);
+      ck.addEventListener("click", function () { check(q); });
+      right.append(ck);
+    }
+    var nx = el("button", drill && !locked ? null : "primary", T.next); nx.type = "button"; nx.disabled = S.cur === items.length - 1;
+    nx.addEventListener("click", function () { go(S.cur + 1); });
+    right.append(nx);
+    acts.append(left, right);
+    card.append(acts);
+    $("kbd-wrap").hidden = S.finished || locked || ["text", "dictation", "fix"].indexOf(q.type) < 0;
+  }
+  function renderAll() {
+    var started = S.started;
+    $("intro").hidden = started;
+    $("card").hidden = !started;
+    $("nav").hidden = !started;
+    $("foot").hidden = !started;
+    $("finish").hidden = S.finished;
+    $("done").hidden = !S.finished;
+    if (started) { renderCard(); renderGrid(); }
+    if (S.finished) {
+      $("result").value = resultText();
+      $("cards").hidden = !drill; $("cards-copy").parentNode.hidden = !drill;
+      $("cards-note").textContent = drill ? T.cardsNote : T.cardsProbe;
+      if (drill) $("cards").value = items.map(cardLine).join("\n");
+    }
+    renderBar();
+  }
+  function go(i) {
+    if (i < 0 || i >= items.length) return;
+    S.cur = i; save(); renderAll();
+    var f = document.querySelector("#card input.ko-in:not(:disabled)");
+    if (f && !S.kbd) f.focus({ preventScroll: true });
+  }
+  function check(q) {
+    if (!answered(q) || S.chk[q.id]) return;
+    S.chk[q.id] = { ok: S.a[q.id] === "NOAUDIO" ? null : correct(q), hint: S.h[q.id] || 0 };
+    save(); renderAll();
+  }
+
+  // ---- result block for the tutor
+  function resultText() {
+    var head = "KT-RESULT id=" + D.id + " mode=" + D.mode + " items=" + items.length +
+      " time=" + Math.floor(S.elapsed / 60) + "m" + String(S.elapsed % 60).padStart(2, "0") + "s";
+    if (hasAudio) head += " voice=" + (currentVoice() ? currentVoice().name.replace(/\s+/g, "_") : "none");
+    if (S.kbdUsed) head += " keyboard=onscreen";
+    var lines = [head];
+    items.forEach(function (q) {
+      var f = [q.id, q.type, shown(q)];
+      if (drill) { var c = S.chk[q.id]; f.push(!c ? "unchecked" : c.ok === null ? "noaudio" : c.ok ? "ok" : "miss"); }
+      if (S.h[q.id]) f.push("hint=" + S.h[q.id]);
+      if (S.plays[q.id]) f.push("plays=" + S.plays[q.id]);
+      f.push((S.t[q.id] || 0) + "s");
+      if (S.reason[q.id] && S.reason[q.id].trim()) f.push("why: " + S.reason[q.id].replace(/\s+/g, " ").trim());
+      lines.push(f.join(" | "));
+    });
+    return lines.join("\n");
+  }
+  function finish() {
+    if (!S.started || S.finished) return;
+    S.finished = true;
+    try { speechSynthesis.cancel(); } catch (e) { /* ignore */ }
+    save(); renderAll();
+    $("done").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  // ---- two-click arming: the viewer blocks confirm()
+  function arm(btn, armedLabel, action) {
+    var armed = false, timer = null;
+    function disarm() { armed = false; btn.classList.remove("armed"); btn.textContent = btn.dataset.label; clearTimeout(timer); }
+    btn.addEventListener("click", function () {
+      if (armed) { disarm(); action(); return; }
+      armed = true; btn.classList.add("armed"); btn.textContent = armedLabel();
+      timer = setTimeout(disarm, 5000);
+    });
+  }
+
+  // ---- wiring
+  $("intro-title").textContent = D.title || "";
+  $("intro-text").textContent = D.intro || "";
+  $("intro-text").hidden = !D.intro;
+  $("intro-mode").textContent = T.count(items.length) + ". " + (drill ? T.drillNote : T.probeNote);
+  $("start").textContent = S.started ? T.resume : T.start;
+  $("voice-label").textContent = T.voice;
+  $("voice-test").textContent = T.test;
+  $("voice-select").addEventListener("change", function (e) { S.voice = e.target.value; save(); });
+  $("voice-test").addEventListener("click", function () { speak({ say: "안녕하세요. 한국어 연습을 시작합니다." }, false); });
+  $("kbd-label").textContent = T.kbd;
+  $("kbd-hint").textContent = T.kbdHint;
+  $("kbd-toggle").checked = S.kbd;
+  $("kbd").hidden = !S.kbd;
+  $("kbd-toggle").addEventListener("change", function (e) {
+    S.kbd = e.target.checked; $("kbd").hidden = !S.kbd; save(); renderCard();
+  });
+  $("done-title").textContent = T.doneTitle;
+  $("done-note").textContent = T.doneNote;
+  $("copy").textContent = T.copy;
+  $("cards-title").textContent = T.cardsTitle;
+  $("cards-copy").textContent = T.copy;
+  $("cards-copy").addEventListener("click", function () {
+    copyText($("cards").value, $("cards"), function (ok) { flash($("cards-status"), T.copied, "", ok); });
+  });
+  $("finish").textContent = T.finish; $("finish").dataset.label = T.finish;
+  $("reset").textContent = T.reset; $("reset").dataset.label = T.reset;
+  if (!hasKo) $("kbd-wrap").remove();
+  buildKeyboard();
+
+  $("start").addEventListener("click", function () { S.started = true; save(); renderAll(); go(S.cur); });
+  arm($("finish"), function () {
+    var n = items.filter(function (q) { return drill ? !S.chk[q.id] : !answered(q); }).length;
+    return n ? (drill ? T.unchecked(n) : T.unanswered(n)) : T.finishAll;
+  }, finish);
+  arm($("reset"), function () { return T.resetSure; }, function () {
+    try { localStorage.removeItem(KEY); } catch (e) { /* ignore */ }
+    var keepVoice = S.voice; S = fresh(); S.voice = keepVoice;
+    $("start").textContent = T.start; $("kbd-toggle").checked = false; $("kbd").hidden = true;
+    $("banner").hidden = true; renderAll(); window.scrollTo(0, 0);
+  });
+  $("copy").addEventListener("click", function () {
+    copyText($("result").value, $("result"), function (ok) { flash($("copy-status"), T.copied, "", ok); });
+  });
+
+  setInterval(function () {
+    if (!S.started || S.finished || document.hidden) return;
+    S.elapsed += 1;
+    var q = items[S.cur]; S.t[q.id] = (S.t[q.id] || 0) + 1;
+    if (D.time_limit_min && S.elapsed >= D.time_limit_min * 60) { finish(); return; }
+    renderBar(); save();
+  }, 1000);
+
+  var banner = $("banner");
+  if (!storageOk) { banner.textContent = T.noStorage; banner.hidden = false; }
+  else if (restored) { banner.textContent = T.restored; banner.hidden = false; }
+  ready = true;
+  renderAll();
+})();
+</script>
