@@ -6,10 +6,12 @@ Persist evidence outside conversational memory. Without a dated record every ses
 
 ### With a file system (Claude Code, the desktop Code tab)
 
-Keep the record in a folder named `korean-course/` in the working directory, unless the learner has named another place. If the working directory already is the course folder (it contains `profile.md` and `patterns.jsonl`), use it directly. Create the folder in session zero and never start a second one.
+Keep the record in one fixed place, `~/korean-course/` in the user's home directory, whatever folder the session was opened in, so every session finds the same course. File tools need an absolute path: resolve `~` first (`echo $HOME`). Create the folder in session zero if it does not exist, and never start a second one.
+
+If the learner asks for another location, use it and ask them to name it at the start of each session. If a session cannot read or write the folder (a declined permission prompt, a sandbox), say so and use the chat state block below for that session; never start a new course somewhere else.
 
 ```
-korean-course/
+~/korean-course/
   profile.md        learner profile and dated skill profile
   patterns.jsonl    one pattern per line, open or closed
   vocab.jsonl       one lexical record per line

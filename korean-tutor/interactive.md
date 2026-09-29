@@ -24,16 +24,16 @@ Due checks and transfer tasks always use `probe`: feedback during them would des
 
 ## Workflow
 
-1. **Write the spec with keys** (format below). With a file system, save it as `korean-course/exercises/<id>.json`, where `<id>` is `YYYY-MM-DD-NN` and matches the round file.
+1. **Write the spec with keys** (format below). With a file system, save it as `~/korean-course/exercises/<id>.json`, where `<id>` is `YYYY-MM-DD-NN` and matches the round file.
 2. **Build the page.** `<skill-dir>` is this skill's folder:
 
    ```
-   python3 <skill-dir>/scripts/build_exercise.py korean-course/exercises/<id>.json korean-course/exercises/<id>.html
+   python3 <skill-dir>/scripts/build_exercise.py ~/korean-course/exercises/<id>.json ~/korean-course/exercises/<id>.html
    ```
 
    Add `--fragment` when the page will be published as an artifact. Fix every error and read every warning.
 3. **Show the page** with what the environment offers:
-   - **Artifact tool** (Claude Code, desktop Code tab): build with `--fragment` to one stable path, `korean-course/exercises/page.html`, and publish it. Record the URL in `profile.md` as `exercise_page` and republish each new round to that same URL, so the learner keeps one link. Republishing reloads an open page, so publish the next round only after the previous result has arrived.
+   - **Artifact tool** (Claude Code, desktop Code tab): build with `--fragment` to one stable path, `~/korean-course/exercises/page.html`, and publish it. Record the URL in `profile.md` as `exercise_page` and republish each new round to that same URL, so the learner keeps one link. Republishing reloads an open page, so publish the next round only after the previous result has arrived.
    - **Files but no Artifact tool:** open the standalone page in the learner's browser (`open` on macOS, `xdg-open` on Linux, `start` on Windows).
    - **Chat with artifacts:** create an HTML artifact from the `--fragment` output. The template is about 50 KB, so in chat prefer text for short sets.
 4. **Stop and wait.** The learner finishes, presses Copy, and pastes the `KT-RESULT` block into the chat.
